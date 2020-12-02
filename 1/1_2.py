@@ -1,7 +1,7 @@
 from itertools import permutations
 import math
 
-with open('input.txt') as f:
+with open("input.txt") as f:
     data = list(map(int, f.readlines()))
 
 
