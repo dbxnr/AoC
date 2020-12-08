@@ -15,6 +15,7 @@ class BagFinder:
         self.parse_data()
         self.parse_data()
         self.graph = self.build_graph()
+        self.distance = 0
 
     def build_graph(self):
         G = nx.DiGraph()
@@ -26,9 +27,13 @@ class BagFinder:
         return G
 
     def find_gold(self):
+        # print(self.graph.edges['shiny gold', 'vibrant plum']['weight'])
         for n in self.graph.nodes:
-            if n != 'shiny gold' and nx.has_path(self.graph, n, 'shiny gold'):
+            if n != "shiny gold" and nx.has_path(self.graph, n, "shiny gold"):
                 self.gold += 1
+                self.distance += (
+                    nx.single_source_dijkstra(self.graph, n, "shiny gold")
+                )[0]
 
     def parse_data(self):
         regex = "((?:[0-9]){1,})(.\w{1,}.\w{1,})"  # noqa: W605
@@ -40,10 +45,11 @@ class BagFinder:
             entries = re.findall(regex, line)
             for i in entries:
                 n = i[1].strip()
-                self.lookup[c][n] = i[0]
+                self.lookup[c][n] = int(i[0])
 
 
 bf = BagFinder(data)
 bf.parse_data()
 bf.find_gold()
 print(f"Gold is {bf.gold}")
+print(f"Distance is {bf.distance}")
